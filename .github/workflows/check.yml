@@ -1,0 +1,15 @@
+name: Checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python test_bridge.py
+      - run: python test_http.py
+      - run: python build_shortcuts.py --endpoint https://health.example.com/api/health/import

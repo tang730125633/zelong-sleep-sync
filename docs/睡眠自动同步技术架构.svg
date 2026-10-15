@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1760" height="1210" viewBox="0 0 1760 1210" role="img" aria-labelledby="title desc">
+<title id="title">睡眠自动同步技术架构</title>
+<desc id="desc">iPhone 上打开微信触发系统快捷指令，读取苹果健康中的睡眠样本，转换成 JSON，经 HTTPS 携带上传凭证发往个人服务器。服务器检查身份和数据，通过睡眠适配层按天归并，在 SQLite 事务内保存分期、日汇总和同步状态。私人网站和只读 MCP 接口读取同一数据库。服务器完成保存后返回 imported 和 changed；没有数据变化时不重复写入。</desc>
+<defs><style>
+text{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;fill:#203c32}.title{font-size:44px;font-weight:650}.h{font-size:26px;font-weight:650}.body{font-size:22px}.small{font-size:19px;fill:#52675c}.code{font-family:Menlo,Consolas,monospace;font-size:18px;fill:#315c46}.line{fill:none;stroke:#8caa98;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.dash{stroke-dasharray:5 7}.white{fill:#eef4ef}
+</style></defs>
+<rect width="1760" height="1210" rx="36" fill="#f6f5ef"/>
+<text x="62" y="62" class="small" style="letter-spacing:3px">泽龙 · 睡眠同步 · 当前实现</text>
+<text x="62" y="125" class="title">从健康样本，到 AI 可读取的数据</text>
+<text x="64" y="170" class="body">原生快捷指令采集 · 自有接口保存 · 网站与 MCP 共用一份记录</text>
+
+<!-- 边界 -->
+<rect x="52" y="212" width="470" height="747" rx="30" fill="#e9eee4"/>
+<rect x="558" y="212" width="650" height="747" rx="30" fill="#e8eee9"/>
+<rect x="1244" y="212" width="464" height="747" rx="30" fill="#e9eee4"/>
+<text x="80" y="258" class="h">01 · iPhone 端</text>
+<text x="586" y="258" class="h">02 · zelong.vip 服务端</text>
+<text x="1272" y="258" class="h">03 · 查看与调用</text>
+
+<!-- 手机 -->
+<rect x="78" y="286" width="418" height="132" rx="25" fill="#fff"/>
+<text x="101" y="322" class="h">Apple 健康 / HealthKit 数据</text>
+<text x="101" y="359" class="body">接收 Apple Watch 的睡眠样本</text>
+<text x="101" y="394" class="small">已在手机保存的数据，无需手表在线</text>
+<path d="M155 418v32" class="line"/><circle cx="155" cy="450" r="5" fill="#315c46"/>
+<rect x="78" y="454" width="418" height="294" rx="25" fill="#fff"/>
+<text x="101" y="494" class="h">泽龙睡眠同步 1</text>
+<text x="101" y="534" class="body">① 查找睡眠样本，只读不改写</text>
+<text x="101" y="570" class="small">两天前零点 → 本次运行时间</text>
+<text x="101" y="613" class="body">② 时间转成 ISO 8601</text>
+<text x="101" y="651" class="body">③ 逐条整理成 JSON 批次</text>
+<text x="101" y="688" class="code">kind · value · start · end</text>
+<text x="101" y="722" class="code">unit · source</text>
+<rect x="78" y="786" width="418" height="146" rx="25" fill="#d7e6d6"/>
+<text x="101" y="824" class="h">系统自动化：微信被打开</text>
+<text x="101" y="861" class="body">立即运行上方快捷指令</text>
+<text x="101" y="899" class="small">微信只是触发条件，不接收数据</text>
+<path d="M287 786v-38" class="line dash"/><circle cx="287" cy="748" r="5" fill="#315c46"/>
+
+<!-- 手机向上传接口 -->
+<path d="M496 600h43V374h45" class="line"/><circle cx="584" cy="374" r="5" fill="#315c46"/>
+<!-- 服务端 -->
+<rect x="584" y="286" width="598" height="199" rx="25" fill="#fff"/>
+<text x="608" y="324" class="h">HTTPS → Nginx → Python 服务</text>
+<text x="608" y="361" class="code">POST /wechat/api/health/import</text>
+<text x="608" y="397" class="body">校验上传凭证、请求格式与大小</text>
+<text x="608" y="432" class="small">Authorization: Bearer [上传密钥]</text>
+<text x="608" y="464" class="small">身份不通过或格式错误：拒绝导入</text>
+<path d="M882 485v28" class="line"/><circle cx="882" cy="513" r="5" fill="#315c46"/>
+<rect x="584" y="518" width="598" height="217" rx="25" fill="#fff"/>
+<text x="608" y="557" class="h">native_health.py · 数据适配</text>
+<text x="608" y="594" class="body">识别中文睡眠分期，校验时间区间</text>
+<text x="608" y="631" class="body">跨夜归到醒来日，合并重叠区间</text>
+<text x="608" y="668" class="small">清醒与卧床不计入总睡眠</text>
+<text x="608" y="705" class="small">来源缺失明确标注，首晚不完整则跳过</text>
+<path d="M882 735v28" class="line"/><circle cx="882" cy="763" r="5" fill="#315c46"/>
+<rect x="584" y="768" width="598" height="164" rx="25" fill="#203c32"/>
+<text x="608" y="808" class="h white">wellbeing.py → SQLite 私有数据库</text>
+<text x="608" y="846" class="body white">事务内比对旧记录，有变化才更新</text>
+<text x="608" y="882" class="code white">sleep_days · sleep_segments</text>
+<text x="608" y="914" class="code white">health_sync：时间、状态、变更数</text>
+
+<!-- 同库读取 -->
+<path d="M1182 851h45V420h43M1227 692h43" class="line"/>
+<circle cx="1270" cy="420" r="5" fill="#315c46"/><circle cx="1270" cy="692" r="5" fill="#315c46"/>
+<rect x="1270" y="286" width="412" height="240" rx="25" fill="#fff"/>
+<text x="1294" y="326" class="h">私人书桌网页</text>
+<text x="1294" y="367" class="body">登录后查询睡眠与同步状态</text>
+<text x="1294" y="409" class="code">GET /wechat/api/health</text>
+<text x="1294" y="454" class="body">查看每日汇总、睡眠分期</text>
+<text x="1294" y="493" class="small">读取服务器已保存的数据</text>
+<rect x="1270" y="560" width="412" height="250" rx="25" fill="#fff"/>
+<text x="1294" y="601" class="h">AI Agent → 只读 MCP</text>
+<text x="1294" y="643" class="code">POST /wechat/api/health/mcp</text>
+<text x="1294" y="681" class="small">独立校验读取身份与请求参数</text>
+<text x="1294" y="720" class="code">get_health_overview</text>
+<text x="1294" y="754" class="code">get_health_history</text>
+<text x="1294" y="789" class="small">只读查询，不直接连接手表</text>
+<text x="1273" y="859" class="body">上传和读取是两条路径</text>
+<text x="1273" y="896" class="small">上传密钥用于导入，不是读取凭证</text>
+<text x="1273" y="929" class="small">AI 按需查询，不会持续监听手表</text>
+
+<!-- 处理回执和限制 -->
+<rect x="52" y="985" width="1656" height="161" rx="30" fill="#e2eadf"/>
+<text x="79" y="1025" class="h">保存完成后，才返回成功回执</text>
+<text x="79" y="1067" class="code">HTTP 200   {"imported": 44, "changed": 0}</text>
+<text x="79" y="1109" class="small">示例：处理 44 条，数据无变化 → 不重复累计</text>
+<path d="M687 1014v103" stroke="#b6c6b7" stroke-width="2"/>
+<text x="718" y="1025" class="h">有效不等于永远不会失败</text>
+<text x="718" y="1067" class="body">断网、运行中断、无可用样本，都可能失败</text>
+<text x="718" y="1109" class="small">接口收到错误会报告错误；未到服务器的请求无法证明上传成功</text>
+<text x="62" y="1182" class="small">当前验收范围：睡眠 · 打开微信触发已实测 · 步数、心率与训练同步尚未完成 · 图中不含真实密钥或健康数值</text>
+</svg>

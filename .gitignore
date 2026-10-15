@@ -1,0 +1,17 @@
+# No user health data or credentials in Git
+/data/
+/.private/
+/verification/
+/dist/
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.sqlite*
+*.db
+*.db-*
+*.shortcut
+__pycache__/
+*.pyc
+.DS_Store
