@@ -2,8 +2,8 @@
 
 **让 Apple Watch 的睡眠记录，来到自己的服务器和 AI 助手身边**
 
-用 iPhone 原生快捷指令读取睡眠
-打开微信，就触发一次上传
+用 iPhone 原生快捷指令读取睡眠<br>
+打开微信，就触发一次上传<br>
 网站和 AI 从自己的数据库读取结果
 
 不依赖 Health Auto Export 订阅
@@ -11,7 +11,7 @@
 
 [安装与部署](docs/安装与部署.md) · [实践方法与踩坑](docs/实践方法与踩坑.md) · [API 说明](docs/API.md)
 
-![工作原理](docs/睡眠自动同步原理.png)
+![泽龙与橘猫：睡眠同步工作原理](docs/睡眠自动同步原理.png?v=zel-brand-2)
 
 ## 为什么做这个
 
@@ -81,7 +81,7 @@ shortcuts sign --mode anyone \
 
 ## 技术结构
 
-![技术原理](docs/睡眠自动同步技术架构.png)
+![泽龙与橘猫：睡眠同步技术架构](docs/睡眠自动同步技术架构.png?v=zel-brand-2)
 
 图中 `zelong.vip` 与 `/wechat/api/…` 是原项目的部署案例
 本仓库独立版使用你自己的域名与 `/api/…`
@@ -132,6 +132,7 @@ shortcuts sign --mode anyone \
 
 - [用户视角 SVG](docs/睡眠自动同步原理.svg)
 - [技术架构 SVG](docs/睡眠自动同步技术架构.svg)
+- [人物风格、参考来源与生成提示词](docs/视觉说明.md)
 
 ## 作者与许可
 
